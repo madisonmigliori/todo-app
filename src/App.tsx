@@ -8,14 +8,14 @@ import TodoCard from "./components/TodoCard";
 
 // creating a schema for strings
 const taskSchema = z.object({
-  toDo: z.string().min(1, "Please enter at least 1 character."),
+  todo: z.string().min(1, "Please enter at least 1 character."),
 });
 
 type Schema = z.infer<typeof taskSchema>;
 
-interface Task {
+export interface Task {
   id: number;
-  toDo: string;
+  message: string;
   completed: boolean;
 }
 
@@ -34,8 +34,8 @@ function App() {
     const nextId = id + 1;
     id = id + 1;
 
-    setTasks([...tasks, { id: nextId, toDo: data.toDo, completed: false }]);
-    reset({ toDo: "" });
+    setTasks([...tasks, { id: nextId, message: data.todo, completed: false }]);
+    reset({ todo: "" });
   };
 
   console.log(tasks);
@@ -76,12 +76,12 @@ function App() {
             <div className="create-task">
               <form onSubmit={handleSubmit(onSubmit)}>
                 <input
-                  {...register("toDo")}
+                  {...register("todo")}
                   id="create-task"
                   placeholder="Create a new todo.."
                   type="text"
                 />
-                <span>{formState.errors.toDo?.message}</span>
+                <span>{formState.errors.todo?.message}</span>
                 <button type="submit">submit</button>
               </form>
             </div>
@@ -90,7 +90,9 @@ function App() {
             <div className="list-container">
               <section className="list">
                 <ul className="list-items" draggable="true">
-                  <TodoCard />
+                  {tasks.map((task) => (
+                    <TodoCard todo={task} key={task.id} />
+                  ))}
                 </ul>
               </section>
               <div className="counter" />
