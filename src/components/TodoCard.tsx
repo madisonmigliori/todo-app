@@ -9,9 +9,8 @@ export default function TodoCard({ todo }: TodoCardProps) {
     <li>
       <input type="checkbox" id="check-box"></input>
       {todo.message}
-      <button className="delete-task">
-        <img src="/icon-cross.svg" />
-      </button>
     </li>
   );
 }
+
+//set to-do items and then delete is import the

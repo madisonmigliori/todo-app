@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { v4 as uuid } from "uuid";
 import "./App.css";
 import TodoCard from "./components/TodoCard";
 
@@ -18,6 +19,17 @@ export interface Task {
   message: string;
   completed: boolean;
 }
+
+// functions needed:
+// addTask(); maybe done
+// showTask(); don't know if I need
+// deleteTask():
+// showAll();
+// showActive();
+// showCompleted(); //use filter
+// clearCompleted();//use filter
+// draggable(); (bonus)
+// darkMode();
 
 function App() {
   // () => {}
@@ -38,24 +50,15 @@ function App() {
     reset({ todo: "" });
   };
 
-  console.log(tasks);
-  // Pull in string from input
-  // Add string to the task object
-  // Add id to task object
-  // Add order, probably just use length of tasks and add 1
-  // Add completed: false to task object
-  // Add task object to tasks
+  //deleteTask
+  const deleteTask = (id: number) => {
+    const newTasks = tasks.filter((task) => id !== task.id);
+    setTasks(newTasks);
+  };
 
-  // functions needed:
-  // addTask();
-  // showTask();
-  // deleteTask():
-  // showAll();
-  // showActive();
-  // showCompleted();
-  // clearCompleted();
-  // draggable();
-  // darkMode();
+  //
+
+  console.log(tasks); //use for testing
 
   return (
     <main>
@@ -82,7 +85,6 @@ function App() {
                   type="text"
                 />
                 <span>{formState.errors.todo?.message}</span>
-                <button type="submit">submit</button>
               </form>
             </div>
           </div>
@@ -92,6 +94,18 @@ function App() {
                 <ul className="list-items" draggable="true">
                   {tasks.map((task) => (
                     <TodoCard todo={task} key={task.id} />
+                  ))}
+                  {tasks.map((task) => (
+                    <div key={task.id}>
+                      {
+                        <button
+                          onClick={() => deleteTask(task.id)}
+                          className="delete-task"
+                        >
+                          <img src="icon-cross.svg" />
+                        </button>
+                      }
+                    </div>
                   ))}
                 </ul>
               </section>
