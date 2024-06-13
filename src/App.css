@@ -110,7 +110,7 @@ body {
   padding: 1rem;
   width: 100%;
   border-radius: 10px;
-  background-color: hsl(233, 14%, 35%);
+  background-color:  hsl(235, 24%, 19%);
   margin: 30px 0;
 }
 
@@ -136,13 +136,10 @@ body {
 }
 .list-container {
   border-radius: 10px;
-  background-color: hsl(233, 14%, 35%);
+  background-color:  hsl(235, 24%, 19%);
   margin: 30px 0;
 }
 
-.delete-task {
-  background-color: white;
-}
 
 .draggable {
   padding: 1rem;
@@ -169,6 +166,20 @@ li {
   text-align: center;
 }
 
+li:hover .delete-task{
+  display: inline;
+}
+
+.button-hover{
+  width: 75px;
+  height: 75px;
+}
+
+.delete-task {
+  background-color: transparent;
+  display: none;
+}
+
 .completed {
   display: flex;
   text-decoration: line-through;
@@ -193,7 +204,7 @@ input[type="check-box"] {
   color: hsl(234, 39%, 85%);
   padding: 20px;
   border-radius: 10px;
-  background-color: hsl(233, 14%, 35%);
+  background-color:  hsl(235, 24%, 19%)
 }
 
 .reorder {

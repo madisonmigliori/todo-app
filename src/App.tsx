@@ -41,8 +41,7 @@ function App() {
   // () => {}
   // eventFunction
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [views, setViews] = useState("All"); //for the states
-  const [numTasks, setNumsTask] = useState(0);
+  const [views, setViews] = useState("All"); //for the statess
   // const [mode, setMode] = useState("darkMode");
 
   // let views = ["All", "Active", "Completed"];
@@ -82,7 +81,7 @@ function App() {
     setTasks(newTasks);
   };
 
-  function changeView(tasks: Task, views: string) {
+  function changeView(tasks: Task[], views: string) {
     return tasks.filter((task: Task) => {
       if (views === "All") {
         return true;
@@ -94,16 +93,7 @@ function App() {
     });
   }
 
-  // function showNumTaskLeft(tasks.completed: boolean) {
-  //   let taskLeft = {tasks.length};
-  //   return tasks.filter((task: Task) => {
-  //     if (task.completed === true) {
-  //       taskLeft = taskLeft - 1;
-  //     } else {
-  //       return taskLeft;
-  //     }
-  //   });
-  // }
+const numTasks = tasks.filter((task) => task.completed !== true);
 
   console.log(tasks); //use for testing
 
@@ -152,7 +142,7 @@ function App() {
                     <div className="counter-container">
                       <p>
                         {/* replace task with useMemo */}
-                        {tasks.length} items left{" "}
+                        {numTasks.length} items left{" "}
                         <button
                           onClick={() => clearCompleted()}
                           className="clearCompleted"
