@@ -3,6 +3,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import Toggle from "react-toggle";
 import { v4 as uuid } from "uuid";
 import "./App.css";
 import TodoCard from "./components/TodoCard";
@@ -15,44 +16,87 @@ const taskSchema = z.object({
 type Schema = z.infer<typeof taskSchema>;
 
 export interface Task {
-  id: number;
+  id: string;
   message: string;
   completed: boolean;
 }
 
 // functions needed:
-// addTask(); maybe done
-// showTask(); don't know if I need
-// deleteTask():
-// showAll();
-// showActive();
-// showCompleted(); //use filter
-// clearCompleted();//use filter
+
+// addTask(); STATUS: done
+// deleteTask(): STATUS: need help with embedding in TodoCard component
+// handleChange(): STATUS: need help with embedding in TodoCard component
+
+// showAll(); //STATUS: (pseudocode is there) dependent on checkbox
+// showActive();//STATUS: (pseudocode is there) dependent on checkbox
+// showCompleted(); //STATUS: (pseudocode is there) dependent on checkbox
+// clearCompleted();// STATUS: (pseudocode is there) dependent on checkbox
+// showNumTaskLeft() // STATUS: ???
+
 // draggable(); (bonus)
 // darkMode();
+// format(); for mobile/desktop
 
 function App() {
   // () => {}
   // eventFunction
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [views, setViews] = useState("All"); //for the states (ask STEVEN if need this -> filter map (possibly))
+  const [mode, setMode] = useState("darkMode");
+
+  // Create variable i.e. filteredTasks = tasks.filter((task) => if(views === blank) {compare task.completed === blank})
 
   const { register, handleSubmit, reset, formState } = useForm<Schema>({
     resolver: zodResolver(taskSchema),
   });
 
-  let id = 0;
-
   const onSubmit = (data: Schema) => {
-    const nextId = id + 1;
-    id = id + 1;
-
-    setTasks([...tasks, { id: nextId, message: data.todo, completed: false }]);
+    setTasks([...tasks, { id: uuid(), message: data.todo, completed: false }]);
     reset({ todo: "" });
   };
 
-  //deleteTask
-  const deleteTask = (id: number) => {
+  //check mark
+  function handleChange(id: string) {
+    const updatedTasks = tasks.map((task) => {
+      if (id == task.id) {
+        return { ...task, completed: !task.completed };
+      }
+      return task;
+    });
+    setTasks(updatedTasks);
+  }
+
+  const deleteTask = (id: string) => {
     const newTasks = tasks.filter((task) => id !== task.id);
+    setTasks(newTasks);
+  };
+
+  const clearCompleted = (id: string) => {
+    if (tasks.filter((task) => id !== task.id)) {
+      const newTasks = tasks.filter((task) => task.completed !== true);
+      setTasks(newTasks);
+    }
+  };
+
+  //changeView
+  // const changeView = () => {
+  //   // All: task,
+  //   // Active:!task.completed,
+  //   // Completed: task.completed,
+  // };
+
+  //TO-DO: need to figure out a way to filter
+  const showAll = () => {
+    setTasks([...tasks]);
+  };
+
+  const showActive = () => {
+    const newTasks = tasks.filter((task) => task.completed !== true);
+    setTasks(newTasks);
+  };
+
+  const showCompleted = () => {
+    const newTasks = tasks.filter((task) => task.completed !== false);
     setTasks(newTasks);
   };
 
@@ -89,63 +133,72 @@ function App() {
             </div>
           </div>
           <div>
-            <div className="list-container">
-              <section className="list">
-                <ul className="list-items" draggable="true">
+            <div className="list">
+              <section className="list-container">
+                <ul className="list-items">
                   {tasks.map((task) => (
-                    <TodoCard todo={task} key={task.id} />
+                    <TodoCard
+                      todo={task}
+                      key={task.id}
+                      deleteTask={deleteTask}
+                      handleChange={handleChange}
+                    />
                   ))}
-                  {tasks.map((task) => (
-                    <div key={task.id}>
-                      {
+
+                  <div className="counter" />
+                  <div className="counter-container">
+                    <p>
+                      {tasks.length} items left{" "}
+                      {tasks.map((task) => (
                         <button
-                          onClick={() => deleteTask(task.id)}
-                          className="delete-task"
+                          key={task.id}
+                          onClick={() => clearCompleted(task.id)}
+                          className="clearCompleted"
                         >
-                          <img src="icon-cross.svg" />
+                          Clear Completed
                         </button>
-                      }
-                    </div>
-                  ))}
+                      ))}
+                    </p>
+                  </div>
                 </ul>
               </section>
-              <div className="counter" />
-              <div className="counter-container">
-                <p>
-                  items left{" "}
-                  <button className="clearCompleted">Clear Completed</button>
-                </p>
-              </div>
             </div>
           </div>
-        </div>
-        <div className="task">
-          <div className="task-counters">
-            <button className="showAll">All</button>
-            <button className="showActive">Active</button>
-            <button className="showCompleted">Completed</button>
+          <div className="task">
+            <div className="task-counters">
+              <button className="showAll" onClick={showAll}>
+                All
+              </button>
+              <button className="showActive" onClick={showActive}>
+                Active
+              </button>
+              <button className="showCompleted" onClick={showCompleted}>
+                Completed
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div className="reorder">
-          <p>Drag and drop to reorder list</p>
-        </div>
+          <div className="reorder">
+            <p>Drag and drop to reorder list</p>
+          </div>
 
-        {/* Add dynamic number
+          {/* Add dynamic number
 
     items left All Active Completed Clear Completed Drag and drop to reorder
     list */}
 
-        <div className="attribution">
-          Challenge by
-          <a
-            href="https://www.frontendmentor.io?ref=challenge"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Frontend Mentor
-          </a>
-          . Coded by <a href="#">hello</a>.
+          <div className="attribution">
+            Challenge by
+            <a
+              href="https://www.frontendmentor.io?ref=challenge"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Frontend Mentor
+            </a>
+            . Coded by{" "}
+            <a href="https://github.com/madisonmigliori/todo-app">Madison</a>.
+          </div>
         </div>
       </div>
     </main>
