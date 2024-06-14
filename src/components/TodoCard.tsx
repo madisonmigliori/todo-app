@@ -16,19 +16,20 @@ export default function TodoCard({
   return (
     <li draggable="true">
       <div>
-      <input
-        type="checkbox"
-        id="check-box"
-        checked={todo.completed}
-        onChange={() => handleChange(todo.id)}
-      ></input> <span className={` ${todo.completed ? "completed": ""}`}>
-      {todo.message}
-      </span>
+        <input
+          type="checkbox"
+          className="check-box"
+          checked={todo.completed}
+          onChange={() => handleChange(todo.id)}
+        ></input>{" "}
+        <span className={` ${todo.completed ? "completed" : ""}`}>
+          {todo.message}
+        </span>
       </div>
       <div className="button-hover">
-      <button className="delete-task" onClick={() => deleteTask(todo.id)}>
-        <img src="icon-cross.svg" />
-      </button>
+        <button className="delete-task" onClick={() => deleteTask(todo.id)}>
+          <img src="icon-cross.svg" />
+        </button>
       </div>
     </li>
   );

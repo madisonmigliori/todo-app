@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useMediaQuery } from "react-responsive";
+import { z, type any } from "zod";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import Toggle from "react-toggle";
 import { v4 as uuid } from "uuid";
 import "./App.css";
 import TodoCard from "./components/TodoCard";
@@ -25,31 +26,24 @@ export interface Task {
 
 // addTask(); STATUS: done
 // deleteTask(): STATUS: done
-// handleChange(): STATUS: not quite done (need line through)
+// handleChange(): STATUS: done
 
-// showAll(); //STATUS: does not work
-// showActive();//STATUS: does not work
-// showCompleted(); //STATUS: does not work
+// showAll(); //STATUS: done
+// showActive();//STATUS: done
+// showCompleted(); //STATUS: done
 // clearCompleted();// STATUS: done
-// showNumTaskLeft() // STATUS: ???
+// showNumTaskLeft() // STATUS: done
 
-// draggable(); (bonus)
-// darkMode();
+// draggable(); (bonus) https://www.geeksforgeeks.org/drag-and-drop-sortable-list-using-reactjs/
+// darkMode(); STATUS:
 // format(); for mobile/desktop
 
 function App() {
-  // () => {}
-  // eventFunction
   const [tasks, setTasks] = useState<Task[]>([]);
   const [views, setViews] = useState("All"); //for the statess
-  // const [mode, setMode] = useState("darkMode");
-
-  // let views = ["All", "Active", "Completed"];
-
-  // Create variable i.e. filteredTasks = tasks.filter((task) => if(views === blank) {compare task.completed === blank})
+  const [modes, setModes] = useState("darkMode");
 
   const sortedTasks = useMemo(() => changeView(tasks, views), [tasks, views]);
-  // const numTaskLeft = useMemo(() => showNumTaskLeft(tasks, numTasks), [tasks, numTasks]);
 
   const { register, handleSubmit, reset, formState } = useForm<Schema>({
     resolver: zodResolver(taskSchema),
@@ -93,24 +87,44 @@ function App() {
     });
   }
 
-const numTasks = tasks.filter((task) => task.completed !== true);
+  const numTasks = tasks.filter((task) => task.completed !== true);
+
+  const changeModes = () => {
+    if (modes === "lightMode") {
+      setModes("darkMode");
+    } else {
+      setModes("lightMode");
+    }
+  };
 
   console.log(tasks); //use for testing
 
   return (
     <main>
-      <div className="mode">
+      <div className={modes ? "dark-mode" : ""}>
         <div className="main-container">
-          <picture>
-            <source srcSet="/bg-desktop-dark.jpg" media="(min-width:100px)" />
-            <img src="/bg-desktop-dark.jpg" alt="background-dark" />
+          <picture className="bg-img">
+            <source
+              srcSet="/bg-desktop-dark.jpg"
+              media="(prefers-color-scheme: light)"
+            />
+            <img src="/bg-desktop-light.jpg" alt="background-dark" />
           </picture>
           <div className="main-container">
             <div className="todo-container">
               {/* No To-dos: Have empty Block */}
               <h1 className="todo">T O D O</h1>
-              <button className="mode">
-                <img className="icon" src="/icon-sun.svg" alt="icon-sun" />
+              <button
+                className="button-mode"
+                onClick={() => {
+                  changeModes();
+                }}
+              >
+                {modes === "darkMode" ? (
+                  <img className="icon" src="/icon-sun.svg" alt="icon-sun" />
+                ) : (
+                  <img className="icon" src="/icon-moon.svg" alt="icon-moon" />
+                )}
               </button>
             </div>
             <div className="task-container">
@@ -141,7 +155,6 @@ const numTasks = tasks.filter((task) => task.completed !== true);
                     <div className="counter" />
                     <div className="counter-container">
                       <p>
-                        {/* replace task with useMemo */}
                         {numTasks.length} items left{" "}
                         <button
                           onClick={() => clearCompleted()}
