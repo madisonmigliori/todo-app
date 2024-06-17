@@ -100,110 +100,109 @@ function App() {
   console.log(tasks); //use for testing
 
   return (
-    <main>
-      <div className={modes ? "dark-mode" : ""}>
-        <div className="main-container">
-          <picture className="bg-img">
-            <source
-              srcSet="/bg-desktop-dark.jpg"
-              media="(prefers-color-scheme: light)"
+    <main className={`${modes === "darkMode" ? "dark-mode" : "light-mode"}`}>
+      <div className="main-container ">
+        <picture className="bg-img">
+          {modes === "darkMode" ? (
+            <img className="bg-img" src="/bg-desktop-dark.jpg" alt="bg-dark" />
+          ) : (
+            <img
+              className="bg-img"
+              src="/bg-desktop-light.jpg"
+              alt="bg-light"
             />
-            <img src="/bg-desktop-light.jpg" alt="background-dark" />
-          </picture>
-          <div className="main-container">
-            <div className="todo-container">
-              {/* No To-dos: Have empty Block */}
-              <h1 className="todo">T O D O</h1>
+          )}
+        </picture>
+        <div className="main-container">
+          <div className="todo-container">
+            {/* No To-dos: Have empty Block */}
+            <h1 className="todo">T O D O</h1>
+            <button
+              className="button-mode"
+              onClick={() => {
+                changeModes();
+              }}
+            >
+              {modes === "darkMode" ? (
+                <img className="icon" src="/icon-sun.svg" alt="icon-sun" />
+              ) : (
+                <img className="icon" src="/icon-moon.svg" alt="icon-moon" />
+              )}
+            </button>
+          </div>
+          <div className="task-container">
+            <div className="create-task">
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <input
+                  {...register("todo")}
+                  id="create-task"
+                  placeholder="Create a new todo.."
+                  type="text"
+                />
+                <span>{formState.errors.todo?.message}</span>
+              </form>
+            </div>
+          </div>
+          <div>
+            <div className="list">
+              <section className="list-container">
+                <ul className="list-items">
+                  {sortedTasks.map((task: Task) => (
+                    <TodoCard
+                      todo={task}
+                      key={task.id}
+                      deleteTask={deleteTask}
+                      handleChange={handleChange}
+                    />
+                  ))}
+                  <div className="counter" />
+                  <div className="counter-container">
+                    <p>
+                      {numTasks.length} items left{" "}
+                      <button
+                        onClick={() => clearCompleted()}
+                        className="clearCompleted"
+                      >
+                        Clear Completed
+                      </button>
+                    </p>
+                  </div>
+                </ul>
+              </section>
+            </div>
+          </div>
+          <div className="task">
+            <div className="task-counters">
+              <button className="showAll" onClick={() => setViews("All")}>
+                All
+              </button>
+              <button className="showActive" onClick={() => setViews("Active")}>
+                Active
+              </button>
               <button
-                className="button-mode"
-                onClick={() => {
-                  changeModes();
-                }}
+                className="showCompleted"
+                onClick={() => setViews("Completed")}
               >
-                {modes === "darkMode" ? (
-                  <img className="icon" src="/icon-sun.svg" alt="icon-sun" />
-                ) : (
-                  <img className="icon" src="/icon-moon.svg" alt="icon-moon" />
-                )}
+                Completed
               </button>
             </div>
-            <div className="task-container">
-              <div className="create-task">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <input
-                    {...register("todo")}
-                    id="create-task"
-                    placeholder="Create a new todo.."
-                    type="text"
-                  />
-                  <span>{formState.errors.todo?.message}</span>
-                </form>
-              </div>
-            </div>
-            <div>
-              <div className="list">
-                <section className="list-container">
-                  <ul className="list-items">
-                    {sortedTasks.map((task: Task) => (
-                      <TodoCard
-                        todo={task}
-                        key={task.id}
-                        deleteTask={deleteTask}
-                        handleChange={handleChange}
-                      />
-                    ))}
-                    <div className="counter" />
-                    <div className="counter-container">
-                      <p>
-                        {numTasks.length} items left{" "}
-                        <button
-                          onClick={() => clearCompleted()}
-                          className="clearCompleted"
-                        >
-                          Clear Completed
-                        </button>
-                      </p>
-                    </div>
-                  </ul>
-                </section>
-              </div>
-            </div>
-            <div className="task">
-              <div className="task-counters">
-                <button className="showAll" onClick={() => setViews("All")}>
-                  All
-                </button>
-                <button
-                  className="showActive"
-                  onClick={() => setViews("Active")}
-                >
-                  Active
-                </button>
-                <button
-                  className="showCompleted"
-                  onClick={() => setViews("Completed")}
-                >
-                  Completed
-                </button>
-              </div>
-            </div>
+          </div>
 
-            <div className="reorder">
-              <p>Drag and drop to reorder list</p>
-            </div>
+          <div className="reorder">
+            <p>Drag and drop to reorder list</p>
+          </div>
 
-            <div className="attribution">
-              Challenge by
-              <a
-                href="https://www.frontendmentor.io?ref=challenge"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Frontend Mentor
-              </a>
-              . Coded by{" "}
-              <a href="https://github.com/madisonmigliori/todo-app">Madison</a>.
-            </div>
+          <div className="attribution">
+            Challenge by
+            <a
+              href="https://www.frontendmentor.io?ref=challenge"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Frontend Mentor
+            </a>
+            . Coded by{" "}
+            <a href="https://github.com/madisonmigliori/todo-app">Madison</a>.
           </div>
         </div>
       </div>
